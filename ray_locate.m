@@ -119,7 +119,7 @@ for i=1:length(orids)
     system(runstring);
     
     [xs ys zs t0 sigx sigy sigz sigt n iter rms]=textread('./temp_location.tsv','%f %f %f %f %f %f %f %f %d %d %f','headerlines',1);
-    fprintf(fout,'%d %f %f %f %f %f %f %f %f %d %d %f\n',orids(i),xs,ys,zs,orig_time(i)+t0,sigx,sigy,sigz,sigt,n,iter,rms);
+    fprintf(fout,'%d %f %f %f %f %f %f %f %f %d %d %f\n',orids(i),xs,ys,zs,orig_time(1)+t0,sigx,sigy,sigz,sigt,n,iter,rms);
     
     system('rm -f temp_traveltimes.tsv temp_location.tsv');
     
