@@ -115,7 +115,7 @@ for i=1:length(orids)
             
     runstring = ['raytrace3d locate ' model_file ' ' num2str(xs) ' ' num2str(ys) ' ' num2str(zs) ' ' ...
     ' 0 180 181 0 360 361 ./temp_traveltimes.tsv ' num2str(tolerance) ' ./temp_location.tsv ' num2str(damping) ...
-    ' 1 0 40' ];
+    ' 1 0 5' ];
     system(runstring);
     
     [xs ys zs t0 sigx sigy sigz sigt n iter rms]=textread('./temp_location.tsv','%f %f %f %f %f %f %f %f %d %d %f','headerlines',1);

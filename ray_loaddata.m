@@ -6,20 +6,23 @@ function r = ray_loaddata(varargin)
 % This function loads data from raytrace3d traveltime file, ray file, model
 % file, and model hits file into a matlab raytrace3d structure
 % 
-% Usage: r = ray_loaddata(model_file,[tt_file],[ray_file],[model_hits_file])
+% Usage: r = ray_loaddata(model_file,[tt_file],[location_file],[ray_file],[model_hits_file])
 %
 % Required Input:
 %   model_file:     The 3D model file used in any raytrace3d routine
 %
 % Optional Inputs:
 %   tt_file:        The travel time file created by running 
-%                   raytrace3d source_to_receivers
+%                   ray_shoot_predicted
 %
-%   ray_file:       The ray file created by running raytrace3d source_to_receivers
+%   location_file:  The hypocentral origin file created by running
+%                   ray_locate
 %
-%   model_hits_file: The 3D model file created by the raytrace3d invert
-%                    function, corresponding to the number of rays passing
-%                    through each grid node
+%   ray_file:       The ray file created by running ray_shoot_predicted
+%
+%   model_hits_file: The 3D model file created by the ray_invert_db or
+%                    ray_invert_ttfile, corresponding to the number of rays
+%                    passing through each grid node
 %
 % Output:
 %   r:              A matlab raytrace3d structure with the following fields:
@@ -42,10 +45,6 @@ function r = ray_loaddata(varargin)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Initializes optional fields to blank values
-x0=[];
-y0=[];
-z0=[];
-T0=[];
 x1=[];
 y1=[];
 z1=[];
@@ -94,6 +93,11 @@ case 2
     if strcmp(s2,'x0')
         tt_file=varargin{2};
         [id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
+     
+    % Checks if the second argument is a location file
+    elseif strcmp(s2,'orid')
+        location_file=varargin{2};
+        [orid xs ys zs t0 sigx sigy sigz sigt ndat iter rms]=textread(location_file,'%d %f %f %f %f %f %f %f %f %d %d %f','headerlines',1);
         
     % Checks if the second argument is a ray file
     elseif strcmp(s2,'x')
@@ -130,6 +134,11 @@ case 3
         tt_file=varargin{2};
         [id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
     
+    % Checks if the second input is a location file
+    elseif strcmp(s2,'xs')
+        location_file=varargin{2};
+        [orid xs ys zs t0 sigx sigy sigz sigt ndat iter rms]=textread(location_file,'%d %f %f %f %f %f %f %f %f %d %d %f','headerlines',1);
+           
     % Checks if the second input is a ray file
     elseif strcmp(s2,'x')
         ray_file=varargin{2};
@@ -148,6 +157,11 @@ case 3
         tt_file=varargin{3};
         [id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
     
+    % Checks if the third input is a location file
+    elseif strcmp(s4,'xs')
+        location_file=varargin{3};
+        [orid xs ys zs t0 sigx sigy sigz sigt ndat iter rms]=textread(location_file,'%d %f %f %f %f %f %f %f %f %d %d %f','headerlines',1);
+              
     % Checks if the third input is a ray file
     elseif strcmp(s4,'x')
         ray_file=varargin{3};
@@ -160,7 +174,7 @@ case 3
     end
  
     
-% Checks if all four files are given
+% Checks if four files are given
 case 4
     [numi,numj,numk]=textread(varargin{1},'%d %d %d',1);
     model_file=varargin{1};
@@ -180,6 +194,11 @@ case 4
         tt_file=varargin{2};
         [id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
     
+    % Checks if the second input is a location file
+    elseif strcmp(s2,'xs')
+        location_file=varargin{2};
+        [orid xs ys zs t0 sigx sigy sigz sigt ndat iter rms]=textread(location_file,'%d %f %f %f %f %f %f %f %f %d %d %f','headerlines',1);
+            
     % Checks if the second input is a ray file
     elseif strcmp(s2,'x')
         ray_file=varargin{2};
@@ -198,6 +217,11 @@ case 4
         tt_file=varargin{3};
         [id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
     
+    % Checks if the third input is a location file
+    elseif strcmp(s4,'xs')
+        location_file=varargin{3};
+        [orid xs ys zs t0 sigx sigy sigz sigt ndat iter rms]=textread(location_file,'%d %f %f %f %f %f %f %f %f %d %d %f','headerlines',1);
+           
     % Checks if the third input is a ray file
     elseif strcmp(s4,'x')
         ray_file=varargin{3};
@@ -214,7 +238,12 @@ case 4
     if strcmp(s6,'x0')
         tt_file=varargin{4};
         [id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
-    
+        
+    % Checks if the third input is a location file
+    elseif strcmp(s6,'xs')
+        location_file=varargin{4};
+        [orid xs ys zs t0 sigx sigy sigz sigt ndat iter rms]=textread(location_file,'%d %f %f %f %f %f %f %f %f %d %d %f','headerlines',1);
+     
     % Checks if the fourth input is a ray file
     elseif strcmp(s6,'x')
         ray_file=varargin{4};
@@ -225,8 +254,128 @@ case 4
         model_hits_file=varargin{4};
         [junk1 junk2 junk3 junk4 junk5 junk6 hits junk7]=textread(model_hits_file,'%d %d %d %f %f %f %d %d','headerlines',1);
     end 
+    
+% Checks if all five files are given
+case 5
+    [numi,numj,numk]=textread(varargin{1},'%d %d %d',1);
+    model_file=varargin{1};
+    [i j k x y z v int]=textread(model_file,'%d %d %d %f %f %f %f %d','headerlines',1);
+    x = round(x./0.01).*0.01;
+    y = round(y./0.01).*0.01;
+    z = round(z./0.01).*0.01;
+    v = round(v./0.01).*0.01;
+    
+    [s1,s2] = textread(varargin{2},'%s %s',1);
+    [s3,s4] = textread(varargin{3},'%s %s',1);
+    [s5,s6] = textread(varargin{4},'%s %s',1);
+    [s7,s8] = textread(varargin{5},'%s %s',1);
+    
+    % Checks what file type the second input is
+    % Checks if second input is a travel time file
+    if strcmp(s2,'x0')
+        tt_file=varargin{2};
+        [id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
+    
+    % Checks if the second input is a location file
+    elseif strcmp(s2,'xs')
+        location_file=varargin{2};
+        [orid xs ys zs t0 sigx sigy sigz sigt ndat iter rms]=textread(location_file,'%d %f %f %f %f %f %f %f %f %d %d %f','headerlines',1);
+            
+    % Checks if the second input is a ray file
+    elseif strcmp(s2,'x')
+        ray_file=varargin{2};
+        [idr Xr Yr Zr tetrar ]=textread(ray_file,'%d %f %f %f %d','headerlines',1);
+        
+    % Otherwise, assumes that the second input is a model.hits file
+    else
+        model_hits_file=varargin{2};
+        [junk1 junk2 junk3 junk4 junk5 junk6 hits junk7]=textread(model_hits_file,'%d %d %d %f %f %f %d %d','headerlines',1);
+    end
+    
+    
+    % Checks what file type the third input is
+    % Checks if third input is a travel time file
+    if strcmp(s4,'x0')
+        tt_file=varargin{3};
+        [id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
+    
+    % Checks if the third input is a location file
+    elseif strcmp(s4,'xs')
+        location_file=varargin{3};
+        [orid xs ys zs t0 sigx sigy sigz sigt ndat iter rms]=textread(location_file,'%d %f %f %f %f %f %f %f %f %d %d %f','headerlines',1);
+           
+    % Checks if the third input is a ray file
+    elseif strcmp(s4,'x')
+        ray_file=varargin{3};
+        [idr Xr Yr Zr tetrar ]=textread(ray_file,'%d %f %f %f %d','headerlines',1);
+    
+    % Otherwise, assumes that the third input is a model.hits file
+    else
+        model_hits_file=varargin{3};
+        [junk1 junk2 junk3 junk4 junk5 junk6 hits junk7]=textread(model_hits_file,'%d %d %d %f %f %f %d %d','headerlines',1);
+    end   
+    
+    % Checks what file type the fourth input is
+    % Checks if fourth input is a travel time file
+    if strcmp(s6,'x0')
+        tt_file=varargin{4};
+        [id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
+        
+    % Checks if the fourth input is a location file
+    elseif strcmp(s6,'xs')
+        location_file=varargin{4};
+        [orid xs ys zs t0 sigx sigy sigz sigt ndat iter rms]=textread(location_file,'%d %f %f %f %f %f %f %f %f %d %d %f','headerlines',1);
+     
+    % Checks if the fourth input is a ray file
+    elseif strcmp(s6,'x')
+        ray_file=varargin{4};
+        [idr Xr Yr Zr tetrar ]=textread(ray_file,'%d %f %f %f %d','headerlines',1);
+    
+    % Otherwise, assumes that the fourth input is a model.hits file
+    else
+        model_hits_file=varargin{4};
+        [junk1 junk2 junk3 junk4 junk5 junk6 hits junk7]=textread(model_hits_file,'%d %d %d %f %f %f %d %d','headerlines',1);
+    end     
+    
+    % Checks what file type the fifth input is
+    % Checks if fifth input is a travel time file
+    if strcmp(s8,'x0')
+        tt_file=varargin{5};
+        [id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
+        
+    % Checks if the fifth input is a location file
+    elseif strcmp(s8,'xs')
+        location_file=varargin{5};
+        [orid xs ys zs t0 sigx sigy sigz sigt ndat iter rms]=textread(location_file,'%d %f %f %f %f %f %f %f %f %d %d %f','headerlines',1);
+     
+    % Checks if the fifth input is a ray file
+    elseif strcmp(s8,'x')
+        ray_file=varargin{5};
+        [idr Xr Yr Zr tetrar ]=textread(ray_file,'%d %f %f %f %d','headerlines',1);
+    
+    % Otherwise, assumes that the fifth input is a model.hits file
+    else
+        model_hits_file=varargin{5};
+        [junk1 junk2 junk3 junk4 junk5 junk6 hits junk7]=textread(model_hits_file,'%d %d %d %f %f %f %d %d','headerlines',1);
+    end 
 
 end
+
+if (exist('xs','var')==1 && exist('x0','var')==1)
+    % If both location_file and tt_file exist, use the origins from the tt_file
+    display('Both location_file and tt_file exist, using origins from tt_file')
+elseif exist('xs','var')==1
+    x0=xs;
+    y0=ys;
+    z0=zs;
+    T0=t0;
+else
+    x0=[];
+    y0=[];
+    z0=[];
+    T0=[];
+end
+
 
 % Creates the raytrace structure
 r = struct('hypocenter',[],'station',[],'traveltime',[],'residual',[],'rayid',[],'raycoord',[],'tetra',[],'modeldims',[],'modelijk',[],'modelxyz',[]);
