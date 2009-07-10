@@ -150,5 +150,5 @@ switch nargin
 end
 
 runstring = ['raytrace3d invert ' model_file ' ' model_pars_file ' ./traveltimes.tsv 5 ' num2str(damping)...
-    ' 0 180 181 0 360 361 ./inversion_model.model'];
+    ' 0 180 100 0 360 181 ./inversion_model.model'];
 system(runstring);

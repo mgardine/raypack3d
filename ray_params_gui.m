@@ -59,10 +59,6 @@ disp('Name of inversion parameter file,');
 INP=input('  (<ENTER> to create new file) : ','s');
 if isempty(INP)
    g=zeros(size(r.modelijk,1),1);
-   [tmp index]=sortrows([r.modelijk(:,1) r.modelijk(:,2) r.modelijk(:,3)],[3 2 1]);
-   
-   r.modelijk(:,:)=r.modelijk(index,:);
-   r.modelxyz(:,:)=r.modelxyz(index,:);
    
 else
    [filelength]=textread(INP,'%s','whitespace','\n');
@@ -87,11 +83,6 @@ else
       toskip=toskip+1;
       group=group+1;
    end
-   % SORT MODEL FILE INTO STANDARD FORMAT
-   [tmp index]=sortrows([r.modelijk(:,1) r.modelijk(:,2) r.modelijk(:,3)],[3 2 1]);
-   
-   r.modelijk(:,:)=r.modelijk(index,:);
-   r.modelxyz(:,:)=r.modelxyz(index,:);
    
    % CREATE GROUP NUMBER VECTOR
    g=zeros(size(r.modelijk,1),1);

@@ -95,7 +95,7 @@ case 2
         [id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
      
     % Checks if the second argument is a location file
-    elseif strcmp(s2,'orid')
+    elseif strcmp(s2,'xs')
         location_file=varargin{2};
         [orid xs ys zs t0 sigx sigy sigz sigt ndat iter rms]=textread(location_file,'%d %f %f %f %f %f %f %f %f %d %d %f','headerlines',1);
         
@@ -390,3 +390,10 @@ r.tetra = tetrar;
 r.modeldims = [numi numj numk];
 r.modelijk = [i j k v int hits];
 r.modelxyz = [x y z v int hits];
+
+% Sorts the model rows into a common format
+[tmp index]=sortrows([r.modelijk(:,1) r.modelijk(:,2) r.modelijk(:,3)],[3 2 1]);
+r.modelijk(:,:)=r.modelijk(index,:);
+r.modelxyz(:,:)=r.modelxyz(index,:);
+
+
