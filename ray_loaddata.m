@@ -392,7 +392,7 @@ r.modelijk = [i j k v int hits];
 r.modelxyz = [x y z v int hits];
 
 % Sorts the model rows into a common format
-[tmp index]=sortrows([r.modelijk(:,1) r.modelijk(:,2) r.modelijk(:,3)],[3 2 1]);
+[tmp index]=sortrows([r.modelijk(:,1) r.modelijk(:,2) r.modelijk(:,3)],[2 1 3]);
 r.modelijk(:,:)=r.modelijk(index,:);
 r.modelxyz(:,:)=r.modelxyz(index,:);
 
