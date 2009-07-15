@@ -58,7 +58,7 @@ switch nargin
         outfile = varargin{3};
         ref_lat = varargin{4};
         ref_lon = varargin{5};
-        station = varargin{6};
+        subset = varargin{6};
 
         db = dbopen(database,'r');
         
@@ -73,7 +73,7 @@ switch nargin
         db = dbjoin(db,db1d);
         db = dbjoin(db,db1e);
 
-        subset = ['orid=~/' num2str(orid) '/ && phase=~/P/ && sta=~/' station '/'];
+        subset = ['orid=~/' num2str(orid) '/ && phase=~/P/ && ' subset ];
         
         db = dbsubset(db,subset);
 

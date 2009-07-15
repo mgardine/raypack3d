@@ -14,11 +14,12 @@ function ray_shoot_predicted(varargin)
 %       OR
 %   ray_latlon2xyz.m (for spherical-earth projection)
 % 
-% Usage: ray_shoot_predicted(database,model_file,[station])
+% Usage: ray_shoot_predicted(database,model_file,[subset])
 %
 % Inputs:
 %   database:       Full path to the css3.0 database.  This database must have
-%                   working origin, site, affiliation, assoc, and arrival tables.
+%                   working origin, site, affiliation, assoc, and arrival
+%                   tables
 %
 %   model_file:     A 3-D velocity model file in the proper format required
 %                   by raytrace3d shoot_star (see raytrace3d shoot_star for
@@ -26,12 +27,12 @@ function ray_shoot_predicted(varargin)
 %
 %
 % Optional Inputs:
-%   station:        A station name in the css3.0 site table to subset on. 
+%   subset:         A valid string for subsetting a Datascope database
 %
 %
 % Output:
 %   origin_data:    A 4 column array, with origin latitides, longitudes, times,
-%                   and magnitudes.
+%                   and magnitudes
 %
 %
 % Author:
@@ -88,7 +89,7 @@ switch nargin
             end
             
             runstring = ['raytrace3d shoot_star ' model_file ' ' num2str(x) ' '...
-                num2str(y) ' ' num2str(z) ' 0 180 181 0 360 361 0 > ./star_file.star'];
+                num2str(y) ' ' num2str(z) ' 0 180 100 0 360 181 0 > ./star_file.star'];
             system(runstring);
             runstring2 = ['raytrace3d source_to_receivers ' model_file ' ' num2str(x) ' '...
                 num2str(y) ' ' num2str(z) ' ./star_file.star 0 ./receiver_file.rec ' ...
@@ -110,7 +111,7 @@ switch nargin
     case 3
         database = varargin{1};
         model_file = varargin{2};
-        station = varargin{3};
+        subset = varargin{3};
         
         db = dbopen(database,'r');
         
@@ -125,11 +126,13 @@ switch nargin
         db2 = dbjoin(db2,db2d);
         db2 = dbjoin(db2,db2e);
         
-        subset = ['phase=~/P/&&sta=~/' station '/'];
+        subset = ['phase=~/P/&&' subset];
         db2 = dbsubset(db2,subset);
         
         [lat,lon,depth,orids] = dbgetv(db2,'lat','lon','depth','orid');
         dbclose(db);
+        
+        orids=unique(orids);
         
         ttout = fopen('./pred_tt.tt','wt');
         rayout = fopen('./ray_file.rays','wt');
@@ -139,7 +142,7 @@ switch nargin
 
         for i=1:length(orids)
             disp(['orid is: ' num2str(orids(i))]);
-            ray_get_receivers(database,orids(i),'./receiver_file.rec',ref_lat,ref_lon,station);
+            ray_get_receivers(database,orids(i),'./receiver_file.rec',ref_lat,ref_lon,subset);
             
             if strcmp(projection,'flat')
                 [x,y,z]=ray_latlon2xyz_flat(lat(i),lon(i),-1*depth(i),ref_lat,ref_lon);
@@ -152,7 +155,7 @@ switch nargin
             end
             
             runstring = ['raytrace3d shoot_star ' model_file ' ' num2str(x) ' '...
-                num2str(y) ' ' num2str(z) ' 0 180 181 0 360 361 0 > ./star_file.star'];
+                num2str(y) ' ' num2str(z) ' 0 180 100 0 360 181 0 > ./star_file.star'];
             system(runstring);
             runstring2 = ['raytrace3d source_to_receivers ' model_file ' ' num2str(x) ' '...
                 num2str(y) ' ' num2str(z) ' ./star_file.star 0 ./receiver_file.rec ' ...
@@ -173,5 +176,5 @@ switch nargin
         
     otherwise
         disp('Invalid inputs')
-        disp('Usage: ray_shoot_predicted(database,model_file,[station]')
+        disp('Usage: ray_shoot_predicted(database,model_file,[subset]')
 end
