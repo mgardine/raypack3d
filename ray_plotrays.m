@@ -27,6 +27,7 @@ function ray_plotrays(varargin)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Checks for the existence of the ray_defaults file
 if exist('ray_defaults','file')==2
     [ref_lat,ref_lon,projection]=ray_defaults();
     disp('ray_defaults file found.')

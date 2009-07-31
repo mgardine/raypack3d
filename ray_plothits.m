@@ -68,6 +68,11 @@ function [varargout] = ray_plothits(varargin)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Checks for the existence of the ray_plotslice function 
+if (exist('ray_plotslice') ~= 2)
+    error('Error: This function is dependent on ray_plotslice. Please add this function into the path')
+end
+
 if isstruct(varargin{1})
     if nargin==3
         r = varargin{1};

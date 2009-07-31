@@ -41,6 +41,17 @@ function ray_shoot_predicted(varargin)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Checks that Antelope is installed on the system.
+if (exist('dbopen') ~= 3)
+    error('Error: Antelope must be installed on the system to use this function')
+end
+
+% Checks for the existence of the ray_get_receivers function 
+if (exist('ray_get_receivers') ~= 2)
+    error('Error: This function is dependent on ray_get_receivers. Please add this function into the path')
+end
+
+% Checks for the existence of the ray_defaults file
 if exist('ray_defaults','file')==2
     [ref_lat,ref_lon,projection]=ray_defaults();
     disp('ray_defaults file found.')
@@ -55,6 +66,17 @@ else
     disp(['ref_lat = ' num2str(ref_lat)])
     disp(['ref_lon = ' num2str(ref_lon)])
     disp(['projection = ' projection])
+end
+
+% Checks for the existence of ray_latlon2xyz or ray_latlon2xyz_flat
+if strcmp(projection,'flat')
+    if (exist('ray_latlon2xyz_flat') ~= 2)
+        error('Error: This function is dependent on ray_latlon2xyz_flat.  Please add this function into the path')
+    end
+elseif strcmp(projection,'spherical')
+    if (exist('ray_latlon2xyz') ~= 2)
+        error('Error: This function is dependent on ray_latlon2xyz.  Please add this function into the path')
+    end
 end
 
 switch nargin

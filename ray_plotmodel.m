@@ -100,6 +100,16 @@ function [varargout] = ray_plotmodel(varargin)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Checks for the existence of the ray_plotslice function 
+if (exist('ray_plotslice') ~= 2)
+    error('Error: This function is dependent on ray_plotslice. Please add this function into the path')
+end
+
+% Checks for the existence of the ray_plotcontour function 
+if (exist('ray_plotcontour') ~= 2)
+    error('Error: This function is dependent on ray_plotcontour. Please add this function into the path')
+end
+
 if isstruct(varargin{1})
     switch nargin
         case 3

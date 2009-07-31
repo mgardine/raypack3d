@@ -369,7 +369,7 @@ elseif exist('xs','var')==1
     y0=ys;
     z0=zs;
     T0=t0;
-else
+elseif (exist('xs','var')~=1 && exist('x0','var')~=1)
     x0=[];
     y0=[];
     z0=[];
