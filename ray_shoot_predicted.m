@@ -85,7 +85,10 @@ switch nargin
         model_file = varargin{2};
         
         db = dbopen(database,'r');
-        db = dblookup(db,'','origin','','');
+        db1a = dblookup(db,'','origin','','');
+        db1b = dblookup(db,'','event','','');
+        db = dbjoin(db1a,db1b);
+        db = dbsubset(db,'orid==prefor');
 
         [lat,lon,depth,orids] = dbgetv(db,'lat','lon','depth','orid');
         dbclose(db);
@@ -142,13 +145,15 @@ switch nargin
         db2c = dblookup(db,'','arrival','','');
         db2d = dblookup(db,'','site','','');
         db2e = dblookup(db,'','affiliation','','');
+        db2f = dblookup(db,'','event','','');
 
         db2 = dbjoin(db2a,db2b);
         db2 = dbjoin(db2,db2c);
         db2 = dbjoin(db2,db2d);
         db2 = dbjoin(db2,db2e);
+        db2 = dbjoin(db2,db2f);
         
-        subset = ['phase=~/P/&&' subset];
+        subset = ['orid==prefor && phase=~/P/&&' subset];
         db2 = dbsubset(db2,subset);
         
         [lat,lon,depth,orids] = dbgetv(db2,'lat','lon','depth','orid');

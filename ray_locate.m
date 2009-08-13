@@ -79,11 +79,15 @@ switch nargin
         db1c = dblookup(db,'','arrival','','');
         db1d = dblookup(db,'','assoc','','');
         db1e = dblookup(db,'','origin','','');
+        db1f = dblookup(db,'','event','','');
 
         db = dbjoin(db1a,db1b);
         db = dbjoin(db,db1c);
         db = dbjoin(db,db1d);
         db = dbjoin(db,db1e);
+        db = dbjoin(db,db1f);
+        
+        db = dbsubset(db,'orid==prefor');
            
     case 5
         database=varargin{1};
@@ -98,13 +102,15 @@ switch nargin
         db1c = dblookup(db,'','arrival','','');
         db1d = dblookup(db,'','assoc','','');
         db1e = dblookup(db,'','origin','','');
+        db1f = dblookup(db,'','event','','');
 
         db = dbjoin(db1a,db1b);
         db = dbjoin(db,db1c);
         db = dbjoin(db,db1d);
         db = dbjoin(db,db1e);
+        db = dbjoin(db,db1f);
 
-        db = dbsubset(db,subset);       
+        db = dbsubset(db,['orid==prefor &&' subset]);       
         
     otherwise
         help ray_locate

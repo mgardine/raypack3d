@@ -88,13 +88,15 @@ db1b = dblookup(db,'','affiliation','','');
 db1c = dblookup(db,'','origin','','');
 db1d = dblookup(db,'','assoc','','');
 db1e = dblookup(db,'','arrival','','');
+db1f = dblookup(db,'','event','','');
 
 db = dbjoin(db1a,db1b);
 db = dbjoin(db,db1e);
 db = dbjoin(db,db1d);
 db = dbjoin(db,db1c);
+db = dbjoin(db,db1f);
 
-dbsubset(db,'phase=~/P/');
+dbsubset(db,'orid==prefor && phase=~/P/');
 db = dbsort(db,'orid');
 
 [orig_lat,orig_lon,depth,site_lat,site_lon,orig_time] = dbgetv(db,'origin.lat','origin.lon','depth','site.lat','site.lon','origin.time');

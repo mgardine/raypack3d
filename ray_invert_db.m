@@ -101,13 +101,15 @@ switch nargin
         db1c = dblookup(db,'','arrival','','');
         db1d = dblookup(db,'','assoc','','');
         db1e = dblookup(db,'','origin','','');
+        db1f = dblookup(db,'','event','','');
 
         db = dbjoin(db1a,db1b);
         db = dbjoin(db,db1c);
         db = dbjoin(db,db1d);
         db = dbjoin(db,db1e);
+        db = dbjoin(db,db1f);
 
-        db = dbsubset(db,'phase=~/P/');
+        db = dbsubset(db,'orid==prefor && phase=~/P/');
         
         ray_make_traveltime(db);
         
@@ -123,13 +125,15 @@ switch nargin
         db1c = dblookup(db,'','arrival','','');
         db1d = dblookup(db,'','assoc','','');
         db1e = dblookup(db,'','origin','','');
+        db1f = dblookup(db,'','event','','');
 
         db = dbjoin(db1a,db1b);
         db = dbjoin(db,db1c);
         db = dbjoin(db,db1d);
         db = dbjoin(db,db1e);
+        db = dbjoin(db,db1f);
 
-        db = dbsubset(db,'phase=~/P/');
+        db = dbsubset(db,'orid==prefor && phase=~/P/');
         
         if exist(varargin{5},'file')~=2
             subset=varargin{5};
@@ -160,13 +164,15 @@ switch nargin
         db1c = dblookup(db,'','arrival','','');
         db1d = dblookup(db,'','assoc','','');
         db1e = dblookup(db,'','origin','','');
+        db1f = dblookup(db,'','event','','');
 
         db = dbjoin(db1a,db1b);
         db = dbjoin(db,db1c);
         db = dbjoin(db,db1d);
         db = dbjoin(db,db1e);
+        db = dbjoin(db,db1f);
 
-        db = dbsubset(db,'phase=~/P/');
+        db = dbsubset(db,'orid==prefor && phase=~/P/');
         db = dbsubset(db,subset);
         
         ray_make_traveltime(db,locations);
