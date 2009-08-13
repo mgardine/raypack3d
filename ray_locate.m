@@ -105,6 +105,10 @@ switch nargin
         db = dbjoin(db,db1e);
 
         db = dbsubset(db,subset);       
+        
+    otherwise
+        help ray_locate
+        return;
 end
 
 orids=dbgetv(db,'orid');

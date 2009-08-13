@@ -66,13 +66,13 @@ if isstruct(varargin{1})
             plot_all=0;
             
         otherwise
-            disp('Error: Invalid inputs')
-            return
+            help ray_plotrays
+            return;
     end
 
 else
-    disp('Error: Input must be a raytrace3d structure')
-    return
+    help ray_plotrays
+    return;
 end
 
 if plot_all

@@ -24,4 +24,6 @@ r.modelxyz(:,6)=final.modelxyz(:,6);
 for i=1:length(r.modelijk(:,4))
     r.modelijk(i,4)=(starting.modelijk(i,4)-final.modelijk(i,4))*100/starting.modelijk(i,4);
     r.modelxyz(i,4)=(starting.modelxyz(i,4)-final.modelxyz(i,4))*100/starting.modelxyz(i,4);
+    r.modelijk(i,6)=(starting.modelijk(i,6)-final.modelijk(i,6));
+    r.modelxyz(i,6)=(starting.modelxyz(i,6)-final.modelxyz(i,6));
 end

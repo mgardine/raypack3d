@@ -359,6 +359,9 @@ case 5
         [junk1 junk2 junk3 junk4 junk5 junk6 hits junk7]=textread(model_hits_file,'%d %d %d %f %f %f %d %d','headerlines',1);
     end 
 
+    otherwise
+        help ray_loaddata
+        return
 end
 
 if (exist('xs','var')==1 && exist('x0','var')==1)

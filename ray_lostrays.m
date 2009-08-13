@@ -78,7 +78,8 @@ switch nargin
         ref_lat=varargin{3};
         ref_lon=varargin{4};
     otherwise
-        disp('Invalid number in inputs. Usage: lostray=ray_lostrays(r.database,[ref_lat],[ref_lon]')
+        help ray_lostrays
+        return;
 end
 
 db = dbopen(database,'r');

@@ -195,8 +195,8 @@ if isstruct(varargin{1})
         num_z=varargin{8};
         
         otherwise
-        disp('Error: Invalid input parameters');
-        return
+        help ray_plotmodel
+        return;
     end
     
     if strcmp(method,'facet')
@@ -247,8 +247,8 @@ elseif nargin==8
     method=varargin{8};
     
 else
-    disp('Error: Input must be a raytrace3d structure or gridded data');
-    return
+    help ray_plotmodel
+    return;
 end
 
 if strcmp(display,'slice')

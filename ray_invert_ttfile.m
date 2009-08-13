@@ -1,4 +1,4 @@
-function ray_invert_ttfile(tt_file,model_file,model_pars_file,damping)
+function ray_invert_ttfile(varargin)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Function ray_invert_ttfile
@@ -36,16 +36,28 @@ function ray_invert_ttfile(tt_file,model_file,model_pars_file,damping)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
+switch nargin
+    case 4
+        tt_file=varargin{1};
+        model_file=varargin{2};
+        model_pars_file=varargin{3};
+        damping=varargin{4};
+        
+        [id x0 y0 z0 x1 y1 z1 T0 Ta TT T dT ratio obs_order pre_order amplitude ntts]=textread(tt_file,'%d %f %f %f %f %f %f %f %f %f %f %f %f %d %d %f %d','headerlines',1);
 
-fid = fopen('./traveltimes.tsv','wt');
+        fid = fopen('./traveltimes.tsv','wt');
 
-for i=1:length(id)
-    fprintf(fid,'%f %f %f %f %f %f 0 0 %f 1 0\n',x0(i),y0(i),z0(i),x1(i),y1(i),z1(i),TT(i));
+        for i=1:length(id)
+            fprintf(fid,'%f %f %f %f %f %f 0 0 %f 1 0\n',x0(i),y0(i),z0(i),x1(i),y1(i),z1(i),TT(i));
+        end
+
+        fclose(fid);
+
+        runstring = ['raytrace3d invert ' model_file ' ' model_pars_file ' ./traveltimes.tsv 5 ' num2str(damping)...
+            ' 0 180 181 0 360 361 ./inversion_model.model'];
+        system(runstring);
+        
+    otherwise
+        help ray_invert_ttfile
+        return;
 end
-
-fclose(fid);
-
-runstring = ['raytrace3d invert ' model_file ' ' model_pars_file ' ./traveltimes.tsv 5 ' num2str(damping)...
-    ' 0 180 181 0 360 361 ./inversion_model.model'];
-system(runstring);

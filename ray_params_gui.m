@@ -45,7 +45,8 @@ switch nargin
             disp('Error: Input argument must be a raytrace structure')
         end
     otherwise
-        disp('Usage: ray_params_gui(ray_struct)')
+        help ray_params_gui
+        return;
 end
 
 

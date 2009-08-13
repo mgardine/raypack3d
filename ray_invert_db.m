@@ -170,6 +170,10 @@ switch nargin
         db = dbsubset(db,subset);
         
         ray_make_traveltime(db,locations);
+        
+    otherwise
+        help ray_invert_db
+        return;
 end
 
 runstring = ['raytrace3d invert ' model_file ' ' model_pars_file ' ./traveltimes.tsv 5 ' num2str(damping)...

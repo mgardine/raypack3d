@@ -79,8 +79,8 @@ if isstruct(varargin{1})
         direction=varargin{2};
         line=varargin{3};
     else
-        disp('Error: Invalid input parameters');
-        return
+        help ray_plothits
+        return;
     end
     
     [X,Y,Z,w]=make_griddata_facet(r);
@@ -94,8 +94,8 @@ elseif nargin==6
     line=varargin{6};
     
 else
-    disp('Error: Input must be a raytrace3d structure or gridded data');
-    return
+    help ray_plothits
+    return;
 end
 
 ray_plotslice(X,Y,Z,w,direction,line,'facet');

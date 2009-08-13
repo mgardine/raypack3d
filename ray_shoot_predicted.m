@@ -197,6 +197,6 @@ switch nargin
         fclose(ttout);
         
     otherwise
-        disp('Invalid inputs')
-        disp('Usage: ray_shoot_predicted(database,model_file,[subset]')
+        help ray_shoot_predicted
+        return;
 end
