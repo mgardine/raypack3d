@@ -20,7 +20,8 @@ function ray_invert_db(varargin)
 %
 % Required Inputs:
 %   database:        The path to a css3.0 database containing the following
-%                    tables: site, affiliation, arrival, assoc, and origin
+%                    tables: site, affiliation, arrival, assoc, origin, and
+%                    event
 %
 %   model_file:      The starting 3D model file used in any raytrace3d routine
 %

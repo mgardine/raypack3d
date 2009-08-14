@@ -18,8 +18,8 @@ function lostray=ray_lostrays(varargin)
 %                   arrays filled.
 %
 %   database:       Full path to the css3.0 database.  This database must
-%                   have working origin, site, affiliation, assoc, and 
-%                   arrival tables.
+%                   have working origin, event, site, affiliation, assoc,
+%                   and arrival tables.
 %
 %
 % Output:

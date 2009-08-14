@@ -18,8 +18,8 @@ function ray_shoot_predicted(varargin)
 %
 % Inputs:
 %   database:       Full path to the css3.0 database.  This database must have
-%                   working origin, site, affiliation, assoc, and arrival
-%                   tables
+%                   working origin, event, site, affiliation, assoc, and
+%                   arrival tables
 %
 %   model_file:     A 3-D velocity model file in the proper format required
 %                   by raytrace3d shoot_star (see raytrace3d shoot_star for
