@@ -13,7 +13,7 @@ function [varargout] = ray_plotmodel(varargin)
 % It has two uses:
 % 
 % Usage 1:
-% [[X],[Y],[Z],[w]]=ray_plotmodel(r,direction,line,[display],[method],[num_x],[num_y],[num_z])
+% [[X],[Y],[Z],[w],[handle]]=ray_plotmodel(r,direction,line,[display],[interval],[method],[num_x],[num_y],[num_z])
 %
 % This usage takes a raytrace3d model and plots along a user-specified
 % plane. It can return the gridded data values for later use.
@@ -31,6 +31,10 @@ function [varargout] = ray_plotmodel(varargin)
 %   display:        The plotting type.  Options are 'slice' (volumetric
 %                   slice plot), or 'contour' (contour plot).
 %                   (default: 'slice')
+%
+%   interval:       Sets a user-defined contour interval. This input is
+%                   only used when 'display' is set to 'contour'.
+%                   (default: 0.2 km/s)
 %
 %   method:         Method for plotting.  Options are 'interp' (interpolate
 %                   between nodes), or 'facet' for grid values between nodes.
@@ -60,9 +64,11 @@ function [varargout] = ray_plotmodel(varargin)
 %
 %   w:              Data at each grid node, output from griddata3
 %
+%   handle:         The graphics handle for the given plot, useful for 
+%                   low-level editing of the figure.
 %
 % Usage 2: 
-% ray_plotmodel(X,Y,Z,w,direction,line,[display],[method])
+% [handle]=ray_plotmodel(X,Y,Z,w,direction,line,[display],[interval],[method])
 %
 % This usage takes the already gridded data output from a previous
 % ray_plotmodel run and plots the data along a user-specified plane
@@ -87,6 +93,10 @@ function [varargout] = ray_plotmodel(varargin)
 %                   slice plot), or 'contour' (contour plot).
 %                   (default: 'slice')
 %
+%   interval:       Sets a user-defined contour interval. This input is
+%                   only used when 'display' is set to 'contour'.
+%                   (default: 0.2 km/s)  
+%
 %   method:         Method for plotting.  Options are 'interp' (interpolate
 %                   between nodes), or 'facet' for grid values between nodes.
 %                   Note: if method = 'facet', the num_x, num_y, and num_z
@@ -94,11 +104,20 @@ function [varargout] = ray_plotmodel(varargin)
 %                   non-parallel grid lines.
 %                   (default: 'interp')
 %
+% Optional Output:
+%   handle:         The graphics handle for the given plot, useful for 
+%                   low-level editing of the figure .
+%
 % Author:
 % Matt Gardine
 % February 2009
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if nargin<1
+   help ray_plotmodel
+   return;
+end
 
 % Checks for the existence of the ray_plotslice function 
 if (exist('ray_plotslice') ~= 2)
@@ -128,6 +147,9 @@ if isstruct(varargin{1})
             direction=varargin{2};
             line=varargin{3};
             display=varargin{4};
+            if strcmp(display,'contour')
+                interval=0.2;
+            end
             method='interp';
             num_x=50;
             num_y=50;
@@ -148,7 +170,15 @@ if isstruct(varargin{1})
         direction=varargin{2};
         line=varargin{3};
         display=varargin{4};
-        method=varargin{5};
+        if strcmp(varargin{5},'interp')||strcmp(varargin{5},'facet')
+            method=varargin{5};
+            interval=0.2;
+        elseif strcmp(display,'contour')
+            interval=varargin{5};
+        else
+            help ray_plotmodel
+            return;
+        end
         num_x=50;
         num_y=50;
         num_z=50;
@@ -157,11 +187,17 @@ if isstruct(varargin{1})
         r = varargin{1};
         direction=varargin{2};
         line=varargin{3};
-        num_x=varargin{4};
-        num_y=varargin{5};
-        num_z=varargin{6};
-        display='slice';
-        method='interp';
+        if strcmp(varargin{4},'contour')
+            display=varargin{4};
+            interval=varargin{5};
+            method=varargin{6};
+        else
+            num_x=varargin{4};
+            num_y=varargin{5};
+            num_z=varargin{6};
+            display='slice';
+            method='interp';
+        end
         
         case 7
         if (strcmp(varargin{4},'slice')||strcmp(varargin{4},'contour'))
@@ -173,6 +209,7 @@ if isstruct(varargin{1})
             num_y=varargin{6};
             num_z=varargin{7};
             method='interp';
+            interval=0.2;
         elseif (strcmp(varargin{4},'interp')||strcmp(varargin{4},'facet'))
             r = varargin{1};
             direction=varargin{2};
@@ -189,10 +226,38 @@ if isstruct(varargin{1})
         direction=varargin{2};
         line=varargin{3};
         display=varargin{4};
-        method=varargin{5};
-        num_x=varargin{6};
-        num_y=varargin{7};
-        num_z=varargin{8};
+        if strcmp(varargin{5},'interp')||strcmp(varargin{5},'facet')
+            method=varargin{5};
+            num_x=varargin{6};
+            num_y=varargin{7};
+            num_z=varargin{8};
+            interval=0.2;
+        elseif strcmp(display,'contour')
+            interval=varargin{5};
+            num_x=varargin{6};
+            num_y=varargin{7};
+            num_z=varargin{8};
+            method='interp';
+        else
+            help ray_plotmodel
+            return;
+        end
+        
+        case 9
+        r = varargin{1};
+        direction=varargin{2};
+        line=varargin{3};
+        display=varargin{4};
+        if strcmp(display,'contour')
+            interval=varargin{5};
+            method=varargin{6};
+            num_x=varargin{7};
+            num_y=varargin{8};
+            num_z=varargin{9};
+        else
+            help ray_plotmodel
+            return;
+        end
         
         otherwise
         help ray_plotmodel
@@ -213,6 +278,7 @@ elseif nargin==6
     direction=varargin{5};
     line=varargin{6};
     method = 'interp';
+    display='slice';
     
 elseif nargin==7
     if (strcmp(varargin{7},'slice')||strcmp(varargin{7},'contour'))
@@ -223,6 +289,9 @@ elseif nargin==7
         direction=varargin{5};
         line=varargin{6};
         display=varargin{7};
+        if strcmp(display,'contour')
+            interval=0.2;
+        end
         method='interp';
         
     elseif (strcmp(varargin{7},'interp')||strcmp(varargin{7},'facet'))
@@ -244,7 +313,27 @@ elseif nargin==8
     direction=varargin{5};
     line=varargin{6};
     display=varargin{7};
-    method=varargin{8};
+    if strcmp(varargin{8},'interp')||strcmp(varargin{8},'facet')
+        method=varargin{8};
+        interval=0.2;
+    elseif strcmp(display,'contour')
+        interval=varargin{8};
+        method='interp';
+    else
+        help ray_plotmodel
+        return;
+    end
+    
+elseif nargin==9
+    X=varargin{1};
+    Y=varargin{2};
+    Z=varargin{3};
+    w=varargin{4};
+    direction=varargin{5};
+    line=varargin{6};
+    display=varargin{7};
+    interval=varargin{8};
+    method=varargin{9};
     
 else
     help ray_plotmodel
@@ -252,20 +341,28 @@ else
 end
 
 if strcmp(display,'slice')
-    ray_plotslice(X,Y,Z,w,direction,line,method);
+    hPlot=ray_plotslice(X,Y,Z,w,direction,line,method);
 
 elseif strcmp(display,'contour')
-    ray_plotcontour(X,Y,Z,w,direction,line)
+    hPlot=ray_plotcontour(X,Y,Z,w,direction,line,interval);
 end
 
 switch nargout
     case 0
         return
+    case 1
+        varargout{1}=hPlot;
     case 4
         varargout{1}=X;
         varargout{2}=Y;
         varargout{3}=Z;
         varargout{4}=w;
+    case 5
+        varargout{1}=X;
+        varargout{2}=Y;
+        varargout{3}=Z;
+        varargout{4}=w;
+        varargout{5}=hPlot;
     otherwise
         disp('Error: Invalid number of output arguments');
         return

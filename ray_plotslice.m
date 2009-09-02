@@ -1,4 +1,4 @@
-function ray_plotslice(X,Y,Z,w,direction,line,method)
+function hPlot=ray_plotslice(X,Y,Z,w,direction,line,method)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Function ray_plotslice
@@ -34,7 +34,7 @@ if strcmp(direction,'xz')
     zd = get(hslice,'YData');
     yd = get(hslice,'ZData');
     delete(hslice);
-    slice(X,Y,Z,w,xd,yd,zd);
+    hPlot=slice(X,Y,Z,w,xd,yd,zd);
     view(0,180)
 elseif strcmp(direction,'yz')
     hslice = surf(y,z,zeros(num_z,num_y)+line);
@@ -43,10 +43,10 @@ elseif strcmp(direction,'yz')
     zd = get(hslice,'YData');
     xd = get(hslice,'ZData');
     delete(hslice);
-    slice(X,Y,Z,w,xd,yd,zd);
+    hPlot=slice(X,Y,Z,w,xd,yd,zd);
     view(90,180)
 elseif strcmp(direction,'xy')
-    slice(X,Y,Z,w,[],[],line);
+    hPlot=slice(X,Y,Z,w,[],[],line);
     view(90,-90)
 end
 colormap(flipud(jet));

@@ -1,4 +1,4 @@
-function ray_plotcontour(X,Y,Z,w,direction,line)
+function hPlot=ray_plotcontour(X,Y,Z,w,direction,line,interval)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Function ray_plotcontour
@@ -13,15 +13,16 @@ function ray_plotcontour(X,Y,Z,w,direction,line)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+max_w=ceil(max(max(max(w))));
+min_w=floor(min(min(min(w))));
+spacing=min_w:interval:max_w;
+
 min_x = min(min(min(X)));
 max_x = max(max(max(X)));
 min_y = min(min(min(Y)));
 max_y = max(max(max(Y)));
 min_z = min(min(min(Z)));
 max_z = max(max(max(Z)));
-
-max_w=ceil(max(max(max(w))));
-min_w=floor(min(min(min(w))));
 
 x = unique(X);
 y = unique(Y);
@@ -38,13 +39,9 @@ if strcmp(direction,'xz')
     zd = get(hslice,'YData');
     yd = get(hslice,'ZData');
     delete(hslice);
-    hslice = slice(X,Y,Z,w,xd,yd,zd);
-    xd = get(hslice,'XData');
-    yd = get(hslice,'YData');
-    zd = get(hslice,'CData');
-    delete(hslice);
-    contour(xd,yd,zd,linspace(min_w,max_w,(max_w-min_w)*5+1));
+    hPlot=contourslice(X,Y,Z,w,xd,yd,zd,spacing);
     view(0,180)
+    
 elseif strcmp(direction,'yz')
     hslice = surf(y,z,zeros(num_z,num_y)+line);
     rotate(hslice,[0,0,1],0);
@@ -52,20 +49,15 @@ elseif strcmp(direction,'yz')
     zd = get(hslice,'YData');
     xd = get(hslice,'ZData');
     delete(hslice);
-    hslice = slice(X,Y,Z,w,xd,yd,zd);
-    xd = get(hslice,'XData');
-    yd = get(hslice,'YData');
-    zd = get(hslice,'CData');
-    delete(hslice);
-    contour(xd,yd,zd,linspace(min_w,max_w,(max_w-min_w)*5+1));
+    hPlot=contourslice(X,Y,Z,w,xd,yd,zd,spacing);
     view(90,180)
 elseif strcmp(direction,'xy')
     hslice = slice(X,Y,Z,w,[],[],line);
     xd = get(hslice,'XData');
     yd = get(hslice,'YData');
-    zd = get(hslice,'CData');
+    zd = get(hslice,'ZData');
     delete(hslice);
-    contour(xd,yd,zd,linspace(min_w,max_w,(max_w-min_w)*5+1));
+    hPlot=contourslice(X,Y,Z,w,xd,yd,zd,spacing);
     view(90,-90)
 end
 
