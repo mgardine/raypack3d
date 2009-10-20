@@ -4,7 +4,7 @@ function ray_plotrays(varargin)
 % Function ray_plotrays
 %
 % This function plots the rays to an individual station given by lat, lon
-% coordinates, or plots all rays if not lat, lon given
+% coordinates, or plots all rays if no lat, lon given
 % 
 % Usage: ray_plotrays(r,lat,lon,[color])
 %
