@@ -140,18 +140,18 @@ switch nargin
         
         db = dbopen(database,'r');
         
-        db2a = dblookup(db,'','origin','','');
-        db2b = dblookup(db,'','assoc','','');
-        db2c = dblookup(db,'','arrival','','');
-        db2d = dblookup(db,'','site','','');
-        db2e = dblookup(db,'','affiliation','','');
-        db2f = dblookup(db,'','event','','');
+        db2_orig = dblookup(db,'','origin','','');
+        db2_assoc = dblookup(db,'','assoc','','');
+        db2_arr = dblookup(db,'','arrival','','');
+        db2_site = dblookup(db,'','site','','');
+        db2_affil = dblookup(db,'','affiliation','','');
+        db2_event = dblookup(db,'','event','','');
 
-        db2 = dbjoin(db2a,db2b);
-        db2 = dbjoin(db2,db2c);
-        db2 = dbjoin(db2,db2d);
-        db2 = dbjoin(db2,db2e);
-        db2 = dbjoin(db2,db2f);
+        db2 = dbjoin(db2_orig,db2_event);
+        db2 = dbjoin(db2,db2_assoc);
+        db2 = dbjoin(db2,db2_arr);
+        db2 = dbjoin(db2,db2_affil);
+        db2 = dbjoin(db2,db2_site);
         
         subset = ['orid==prefor && phase=~/P/&&' subset];
         db2 = dbsubset(db2,subset);

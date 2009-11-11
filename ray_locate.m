@@ -74,20 +74,21 @@ switch nargin
         damping=varargin{4};
         
         db = dbopen(database,'r');
-        db1a = dblookup(db,'','site','','');
-        db1b = dblookup(db,'','affiliation','','');
-        db1c = dblookup(db,'','arrival','','');
-        db1d = dblookup(db,'','assoc','','');
-        db1e = dblookup(db,'','origin','','');
-        db1f = dblookup(db,'','event','','');
-
-        db = dbjoin(db1a,db1b);
-        db = dbjoin(db,db1c);
-        db = dbjoin(db,db1d);
-        db = dbjoin(db,db1e);
-        db = dbjoin(db,db1f);
+        db_site = dblookup(db,'','site','','');
+        db_affil = dblookup(db,'','affiliation','','');
+        db_arr = dblookup(db,'','arrival','','');
+        db_assoc = dblookup(db,'','assoc','','');
+        db_orig = dblookup(db,'','origin','','');
+        db_event = dblookup(db,'','event','','');
+        
+        db = dbjoin(db_orig,db_event);
         
         db = dbsubset(db,'orid==prefor');
+        
+        db = dbjoin(db,db_assoc);
+        db = dbjoin(db,db_arr);
+        db = dbjoin(db,db_affil);
+        db = dbjoin(db,db_site);
            
     case 5
         database=varargin{1};
@@ -97,20 +98,23 @@ switch nargin
         subset=varargin{5};
         
         db = dbopen(database,'r');
-        db1a = dblookup(db,'','site','','');
-        db1b = dblookup(db,'','affiliation','','');
-        db1c = dblookup(db,'','arrival','','');
-        db1d = dblookup(db,'','assoc','','');
-        db1e = dblookup(db,'','origin','','');
-        db1f = dblookup(db,'','event','','');
+        db_site = dblookup(db,'','site','','');
+        db_affil = dblookup(db,'','affiliation','','');
+        db_arr = dblookup(db,'','arrival','','');
+        db_assoc = dblookup(db,'','assoc','','');
+        db_orig = dblookup(db,'','origin','','');
+        db_event = dblookup(db,'','event','','');
+        
+        db = dbjoin(db_orig,db_event);
+        
+        db = dbsubset(db,'orid==prefor');
+        
+        db = dbjoin(db,db_assoc);
+        db = dbjoin(db,db_arr);
+        db = dbjoin(db,db_affil);
+        db = dbjoin(db,db_site);
 
-        db = dbjoin(db1a,db1b);
-        db = dbjoin(db,db1c);
-        db = dbjoin(db,db1d);
-        db = dbjoin(db,db1e);
-        db = dbjoin(db,db1f);
-
-        db = dbsubset(db,['orid==prefor &&' subset]);       
+        db = dbsubset(db,subset);       
         
     otherwise
         help ray_locate

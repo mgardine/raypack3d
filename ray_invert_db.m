@@ -97,20 +97,23 @@ switch nargin
         damping=varargin{4};
         
         db = dbopen(database,'r');
-        db1a = dblookup(db,'','site','','');
-        db1b = dblookup(db,'','affiliation','','');
-        db1c = dblookup(db,'','arrival','','');
-        db1d = dblookup(db,'','assoc','','');
-        db1e = dblookup(db,'','origin','','');
-        db1f = dblookup(db,'','event','','');
+        db_site = dblookup(db,'','site','','');
+        db_affil = dblookup(db,'','affiliation','','');
+        db_arr = dblookup(db,'','arrival','','');
+        db_assoc = dblookup(db,'','assoc','','');
+        db_orig = dblookup(db,'','origin','','');
+        db_event = dblookup(db,'','event','','');
 
-        db = dbjoin(db1a,db1b);
-        db = dbjoin(db,db1c);
-        db = dbjoin(db,db1d);
-        db = dbjoin(db,db1e);
-        db = dbjoin(db,db1f);
+        db = dbjoin(db_orig,db_event);
+        
+        db = dbsubset(db,'orid==prefor');
+        
+        db = dbjoin(db,db_assoc);
+        db = dbjoin(db,db_arr);
+        db = dbjoin(db,db_affil);
+        db = dbjoin(db,db_site);
 
-        db = dbsubset(db,'orid==prefor && phase=~/P/');
+        db = dbsubset(db,'phase=~/P/');
         
         ray_make_traveltime(db);
         
@@ -121,20 +124,23 @@ switch nargin
         damping=varargin{4};
         
         db = dbopen(database,'r');
-        db1a = dblookup(db,'','site','','');
-        db1b = dblookup(db,'','affiliation','','');
-        db1c = dblookup(db,'','arrival','','');
-        db1d = dblookup(db,'','assoc','','');
-        db1e = dblookup(db,'','origin','','');
-        db1f = dblookup(db,'','event','','');
+        db_site = dblookup(db,'','site','','');
+        db_affil = dblookup(db,'','affiliation','','');
+        db_arr = dblookup(db,'','arrival','','');
+        db_assoc = dblookup(db,'','assoc','','');
+        db_orig = dblookup(db,'','origin','','');
+        db_event = dblookup(db,'','event','','');
 
-        db = dbjoin(db1a,db1b);
-        db = dbjoin(db,db1c);
-        db = dbjoin(db,db1d);
-        db = dbjoin(db,db1e);
-        db = dbjoin(db,db1f);
+        db = dbjoin(db_orig,db_event);
+        
+        db = dbsubset(db,'orid==prefor');
+        
+        db = dbjoin(db,db_assoc);
+        db = dbjoin(db,db_arr);
+        db = dbjoin(db,db_affil);
+        db = dbjoin(db,db_site);
 
-        db = dbsubset(db,'orid==prefor && phase=~/P/');
+        db = dbsubset(db,'phase=~/P/');
         
         if exist(varargin{5},'file')~=2
             subset=varargin{5};
@@ -160,20 +166,23 @@ switch nargin
         end
         
         db = dbopen(database,'r');
-        db1a = dblookup(db,'','site','','');
-        db1b = dblookup(db,'','affiliation','','');
-        db1c = dblookup(db,'','arrival','','');
-        db1d = dblookup(db,'','assoc','','');
-        db1e = dblookup(db,'','origin','','');
-        db1f = dblookup(db,'','event','','');
+        db_site = dblookup(db,'','site','','');
+        db_affil = dblookup(db,'','affiliation','','');
+        db_arr = dblookup(db,'','arrival','','');
+        db_assoc = dblookup(db,'','assoc','','');
+        db_orig = dblookup(db,'','origin','','');
+        db_event = dblookup(db,'','event','','');
 
-        db = dbjoin(db1a,db1b);
-        db = dbjoin(db,db1c);
-        db = dbjoin(db,db1d);
-        db = dbjoin(db,db1e);
-        db = dbjoin(db,db1f);
+        db = dbjoin(db_orig,db_event);
+        
+        db = dbsubset(db,'orid==prefor');
+        
+        db = dbjoin(db,db_assoc);
+        db = dbjoin(db,db_arr);
+        db = dbjoin(db,db_affil);
+        db = dbjoin(db,db_site);
 
-        db = dbsubset(db,'orid==prefor && phase=~/P/');
+        db = dbsubset(db,'phase=~/P/');
         db = dbsubset(db,subset);
         
         ray_make_traveltime(db,locations);
