@@ -47,7 +47,7 @@ switch nargin
         db = dbsort(db,'orid');
         
         [orig_lat,orig_lon,orig_depth,sta_lat,sta_lon,sta_elev,orig_time,arr_time]=...
-            dbgetv(db,'origin.lat','origin.lon','depth','lat','lon','elev','origin.time','arrival.time');
+            dbgetv(db,'origin.lat','origin.lon','origin.depth','site.lat','site.lon','site.elev','origin.time','arrival.time');
 
         orig_x=zeros(length(orig_lat),1);
         orig_y=zeros(length(orig_lat),1);

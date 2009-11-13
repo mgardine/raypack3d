@@ -55,7 +55,7 @@ switch nargin
         
         db = dbsubset(db,subset);
 
-        [lat,lon,elev,orig_time,arr_time] = dbgetv(db,'lat','lon','elev','origin.time','arrival.time');
+        [lat,lon,elev,orig_time,arr_time] = dbgetv(db,'site.lat','site.lon','site.elev','origin.time','arrival.time');
         dbclose(db);
         
     case 6
@@ -87,7 +87,7 @@ switch nargin
         
         db = dbsubset(db,subset);
 
-        [lat,lon,elev,orig_time,arr_time] = dbgetv(db,'site.lat','site.lon','elev','origin.time','arrival.time');
+        [lat,lon,elev,orig_time,arr_time] = dbgetv(db,'site.lat','site.lon','site.elev','origin.time','arrival.time');
         dbclose(db);
         
     otherwise
