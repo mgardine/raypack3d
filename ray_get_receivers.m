@@ -7,9 +7,7 @@ function ray_get_receivers(varargin)
 % the receiver.rec file as required by raytrace3d source_to_receiver.
 %
 % This function requires the presence of one other function:
-%   ray_latlon2xyz_flat.m (for flat-earth projection)
-%       OR
-%   ray_latlon2xyz.m (for spherical-earth projection)
+%   ray_latlon2xyz.m
 %
 % Author: 
 % Matt Gardine
@@ -26,12 +24,13 @@ else
 end
 
 switch nargin
-    case 5
+    case 6
         database = varargin{1};
         orid = varargin{2};
         outfile = varargin{3};
         ref_lat = varargin{4};
         ref_lon = varargin{5};
+        projection = varargin{6};
 
         db = dbopen(database,'r');
         
@@ -58,13 +57,14 @@ switch nargin
         [lat,lon,elev,orig_time,arr_time] = dbgetv(db,'site.lat','site.lon','site.elev','origin.time','arrival.time');
         dbclose(db);
         
-    case 6
+    case 7
         database = varargin{1};
         orid = varargin{2};
         outfile = varargin{3};
         ref_lat = varargin{4};
         ref_lon = varargin{5};
-        subset = varargin{6};
+        projection = varargin{6};
+        subset = varargin{7};
 
         db = dbopen(database,'r');
         db_site = dblookup(db,'','site','','');
@@ -94,25 +94,13 @@ switch nargin
         disp('Invalid options for get_receivers');
 end
 
-if strcmp(projection,'flat')
-    fid = fopen(outfile,'wt');
-    fprintf(fid,'%s\n','x     y     z     T0     T     ratio     order');
-    for i=1:length(lat)
-        [x,y,z] = ray_latlon2xyz_flat(lat(i),lon(i),elev(i),ref_lat,ref_lon);
-        fprintf(fid,'%f %f %f %f %f 1 0\n',x,y,z,orig_time(i),arr_time(i));
-    end
-    
-elseif strcmp(projection,'spherical')
+   
+
 fid = fopen(outfile,'wt');
-    fprintf(fid,'%s\n','x     y     z     T0     T     ratio     order');
-    for i=1:length(lat)
-        [x,y,z] = ray_latlon2xyz(lat(i),lon(i),elev(i),ref_lat,ref_lon);
-        fprintf(fid,'%f %f %f %f %f 1 0\n',x,y,z,orig_time(i),arr_time(i));
-    end
-    
-else
-    disp('Error: Invalid projection type');
-    return
+fprintf(fid,'%s\n','x     y     z     T0     T     ratio     order');
+for i=1:length(lat)
+    [x,y,z] = ray_latlon2xyz(lat(i),lon(i),elev(i),ref_lat,ref_lon,projection);
+    fprintf(fid,'%f %f %f %f %f 1 0\n',x,y,z,orig_time(i),arr_time(i));
 end
 
 fclose(fid);

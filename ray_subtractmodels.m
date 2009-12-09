@@ -7,10 +7,11 @@ function r = ray_subtractmodels(varargin)
 % modelijk and modelxyz velocity and hits values from the final modelijk
 % and modelxyz velocity and hits values node-by-node. Note that this
 % function requires that the two structures be gridded the same. The output
-% can be in either absolute velocity change or percent change from the
+% can be in either absolute change or percent change from the
 % starting model. The resulting structure only contains the modeldims,
 % modelijk, and modelxyz fields with all the other fields cleared (as they
-% no longer have a logical meaning).
+% no longer have a logical meaning).  This function subtracts both the
+% velocity field as well as the q field.
 % 
 % Usage: r = ray_subtractmodels(final,starting,[percent])
 %
@@ -80,6 +81,8 @@ if percent
         r.modelxyz(i,4)=(final.modelxyz(i,4)-starting.modelxyz(i,4))*100/starting.modelxyz(i,4);
         r.modelijk(i,6)=(final.modelijk(i,6)-starting.modelijk(i,6));
         r.modelxyz(i,6)=(final.modelxyz(i,6)-starting.modelxyz(i,6));
+        r.modelijk(i,7)=(final.modelijk(i,7)-starting.modelijk(i,7))*100/starting.modelijk(i,7);
+        r.modelxyz(i,7)=(final.modelxyz(i,7)-starting.modelxyz(i,7))*100/starting.modelxyz(i,7);
     end
     
 else
@@ -88,5 +91,7 @@ else
         r.modelxyz(i,4)=(final.modelxyz(i,4)-starting.modelxyz(i,4));
         r.modelijk(i,6)=(final.modelijk(i,6)-starting.modelijk(i,6));
         r.modelxyz(i,6)=(final.modelxyz(i,6)-starting.modelxyz(i,6));
+        r.modelijk(i,7)=(final.modelijk(i,7)-starting.modelijk(i,7));
+        r.modelxyz(i,7)=(final.modelxyz(i,7)-starting.modelxyz(i,7));
     end
 end

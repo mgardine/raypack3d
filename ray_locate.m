@@ -6,21 +6,24 @@ function ray_locate(varargin)
 % This function locates origins using arrival data found in a css3.0
 % database and a raytrace3d model file.
 %
+% This function requires the presence of one other functions:
+%   ray_latlon2xyz.m
+%
 % Usage:
 %   ray_locate(database,model_file,tolerance,damping,[subset])
 %
 % Required Inputs:
-%   database:               The path to a css3.0 database containing the
+%   database:         The path to a css3.0 database containing the
 %                           following: tables: site, affiliation, arrival, 
 %                           assoc, origin, and event
 %
 %   model_file:             The 3D model file used in any raytrace3d routine
 %
-%   tolerance:              The value, in seconds, for which the iterating
+%   tolerance:         The value, in seconds, for which the iterating
 %                           will stop when the rms traveltime error is less 
 %                           than.
 %
-%   damping:                A fraction of the maximum GTG value.
+%   damping:         A fraction of the maximum GTG value.
 %
 % Optional Input:
 %   subset:                 A valid string for subsetting a Datascope database
@@ -55,15 +58,9 @@ else
     disp(['projection = ' projection])
 end
 
-% Checks for the existence of ray_latlon2xyz or ray_latlon2xyz_flat
-if strcmp(projection,'flat')
-    if (exist('ray_latlon2xyz_flat') ~= 2)
-        error('Error: This function is dependent on ray_latlon2xyz_flat.  Please add this function into the path')
-    end
-elseif strcmp(projection,'spherical')
-    if (exist('ray_latlon2xyz') ~= 2)
-        error('Error: This function is dependent on ray_latlon2xyz.  Please add this function into the path')
-    end
+% Checks for the existence of ray_latlon2xyz
+if (exist('ray_latlon2xyz') ~= 2)
+    error('Error: This function is dependent on ray_latlon2xyz.  Please add this function into the path')
 end
 
 switch nargin
@@ -131,16 +128,8 @@ for i=1:length(orids)
     db_temp=dbsubset(db,['orid=~/' num2str(orids(i)) '/']);
     
     [orig_lat,orig_lon,orig_depth,orig_time]=dbgetv(db_temp,'origin.lat','origin.lon','origin.depth','origin.time');
-    
-    if strcmp(projection,'flat')
-        [xs,ys,zs]=ray_latlon2xyz_flat(orig_lat(1),orig_lon(1),-1*orig_depth(1),ref_lat,ref_lon);
         
-    elseif strcmp(projection,'spherical')
-        [xs,ys,zs]=ray_latlon2xyz(orig_lat(1),orig_lon(1),-1*orig_depth(1),ref_lat,ref_lon);
-    
-    else
-        disp('Error: Invalid projection type');
-    end
+    [xs,ys,zs]=ray_latlon2xyz(orig_lat(1),orig_lon(1),-1*orig_depth(1),ref_lat,ref_lon,projection);
     
     make_ttfile(db_temp)
             
@@ -174,30 +163,15 @@ end
 fid = fopen('./temp_traveltimes.tsv','wt');
 fprintf(fid,'%s\n','x y z T0 T ratio order');
 
-if strcmp(projection,'flat')
-    for i=1:length(sta_lat)
-        [sta_x(i),sta_y(i),sta_z(i)]=ray_latlon2xyz_flat(sta_lat(i),sta_lon(i),sta_elev(i),ref_lat,ref_lon);
-        time(i)=arr_time(i)-orig_time(i);
-        if strcmp(phase(i),'P')
-            fprintf(fid,'%f %f %f 0 %f 1 0\n',sta_x(i),sta_y(i),sta_z(i),time(i));
-        elseif strcmp(phase(i),'S')
-            fprintf(fid,'%f %f %f 0 %f 1.76 0\n',sta_x(i),sta_y(i),sta_z(i),time(i));
-        end
+for i=1:length(sta_lat)
+    [sta_x(i),sta_y(i),sta_z(i)]=ray_latlon2xyz(sta_lat(i),sta_lon(i),sta_elev(i),ref_lat,ref_lon,projection);
+    time(i)=arr_time(i)-orig_time(i);
+    if strcmp(phase(i),'P')
+        fprintf(fid,'%f %f %f 0 %f 1 0\n',sta_x(i),sta_y(i),sta_z(i),time(i));
+    elseif strcmp(phase(i),'S')
+        fprintf(fid,'%f %f %f 0 %f 1.76 0\n',sta_x(i),sta_y(i),sta_z(i),time(i));
     end
-    
-elseif strcmp(projection,'spherical')
-    for i=1:length(sta_lat)
-        [sta_x(i),sta_y(i),sta_z(i)]=ray_latlon2xyz(sta_lat(i),sta_lon(i),sta_elev(i),ref_lat,ref_lon);
-        time(i)=arr_time(i)-orig_time(i);
-        if strcmp(phase(i),'P')
-            fprintf(fid,'%f %f %f 0 %f 1 0\n',sta_x(i),sta_y(i),sta_z(i),time(i));
-        elseif strcmp(phase(i),'S')
-            fprintf(fid,'%f %f %f 0 %f 1.76 0\n',sta_x(i),sta_y(i),sta_z(i),time(i));
-        end
-    end
-    
-else
-    disp('Error: Invalid projection type');
 end
+
 
 fclose(fid);

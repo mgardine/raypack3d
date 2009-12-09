@@ -10,9 +10,7 @@ function ray_shoot_predicted(varargin)
 %
 % This function requires the presence of two other functions:
 %   ray_get_receivers.m
-%   ray_latlon2xyz_flat.m (for flat-earth projection)
-%       OR
-%   ray_latlon2xyz.m (for spherical-earth projection)
+%   ray_latlon2xyz.m
 % 
 % Usage: ray_shoot_predicted(database,model_file,[subset])
 %
@@ -68,15 +66,9 @@ else
     disp(['projection = ' projection])
 end
 
-% Checks for the existence of ray_latlon2xyz or ray_latlon2xyz_flat
-if strcmp(projection,'flat')
-    if (exist('ray_latlon2xyz_flat') ~= 2)
-        error('Error: This function is dependent on ray_latlon2xyz_flat.  Please add this function into the path')
-    end
-elseif strcmp(projection,'spherical')
-    if (exist('ray_latlon2xyz') ~= 2)
-        error('Error: This function is dependent on ray_latlon2xyz.  Please add this function into the path')
-    end
+% Checks for the existence of ray_latlon2xyz
+if (exist('ray_latlon2xyz') ~= 2)
+    error('Error: This function is dependent on ray_latlon2xyz.  Please add this function into the path')
 end
 
 switch nargin
@@ -101,17 +93,9 @@ switch nargin
 
         for i=1:length(orids)
             disp(['orid is: ' num2str(orids(i))]);
-            ray_get_receivers(database,orids(i),'./receiver_file.rec',ref_lat,ref_lon);
-            
-            if strcmp(projection,'flat')
-                [x,y,z]=ray_latlon2xyz_flat(lat(i),lon(i),-1*depth(i),ref_lat,ref_lon);
+            ray_get_receivers(database,orids(i),'./receiver_file.rec',ref_lat,ref_lon,projection);
                 
-            elseif strcmp(projection,'spherical')
-                [x,y,z]=ray_latlon2xyz(lat(i),lon(i),-1*depth(i),ref_lat,ref_lon);
-                
-            else
-                disp('Error: Invalid projection type');
-            end
+            [x,y,z]=ray_latlon2xyz(lat(i),lon(i),-1*depth(i),ref_lat,ref_lon,projection);
             
             runstring = ['raytrace3d shoot_star ' model_file ' ' num2str(x) ' '...
                 num2str(y) ' ' num2str(z) ' 0 180 100 0 360 181 0 > ./star_file.star'];
@@ -169,17 +153,9 @@ switch nargin
 
         for i=1:length(orids)
             disp(['orid is: ' num2str(orids(i))]);
-            ray_get_receivers(database,orids(i),'./receiver_file.rec',ref_lat,ref_lon,subset);
-            
-            if strcmp(projection,'flat')
-                [x,y,z]=ray_latlon2xyz_flat(lat(i),lon(i),-1*depth(i),ref_lat,ref_lon);
-                
-            elseif strcmp(projection,'spherical')
-                [x,y,z]=ray_latlon2xyz(lat(i),lon(i),-1*depth(i),ref_lat,ref_lon);
-                
-            else
-                disp('Error: Invalid projection type');
-            end
+            ray_get_receivers(database,orids(i),'./receiver_file.rec',ref_lat,ref_lon,projection,subset);
+
+            [x,y,z]=ray_latlon2xyz(lat(i),lon(i),-1*depth(i),ref_lat,ref_lon,projection);
             
             runstring = ['raytrace3d shoot_star ' model_file ' ' num2str(x) ' '...
                 num2str(y) ' ' num2str(z) ' 0 180 100 0 360 181 0 > ./star_file.star'];

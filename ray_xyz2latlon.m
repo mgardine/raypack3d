@@ -1,13 +1,12 @@
-function [lat,lon,alt] = ray_xyz2latlon(x,y,z,ref_lat,ref_lon,ref_alt)
+function [lat,lon,alt] = ray_xyz2latlon(x,y,z,ref_lat,ref_lon,ref_alt,projection)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Function ray_xyz2latlon
 %
 % This function takes NED (North [positve x], East [positive y], Down 
 % [positive z]) cartesian coordinate system and converts them to latitude & 
-% longitude coordinates, using a spherical earth. In this tranformation, 
-% x, y, and z are in kilometers. For a flat earth projection,
-% use ray_xyz2latlon_flat.
+% longitude coordinates, for either a flat earth or a spherical earth. 
+% In this tranformation, x, y, and z are in kilometers.
 %
 % Usage: [lat,lon,elev]=ray_latlon2xyz(x,y,z,ref_lat,ref_lon,ref_alt)
 %
@@ -18,6 +17,9 @@ function [lat,lon,alt] = ray_xyz2latlon(x,y,z,ref_lat,ref_lon,ref_alt)
 %   ref_lat:    Reference latitude where x will be equal to 0
 %   ref_lon:    Reference longitude where y will be equal to 0
 %   ref_alt:    Reference altitude where z will be equal to 0
+%   projection: Desired projection type.  Valid options are 'flat' for a
+%                   flat-earth projection, or 'spherical' for a
+%                   spherical-earth projection.
 %
 % Outputs:
 %   lat:        Output latitude coordinate
@@ -30,6 +32,7 @@ function [lat,lon,alt] = ray_xyz2latlon(x,y,z,ref_lat,ref_lon,ref_alt)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+if strcmp(projection,'spherical')
   % Convert north, east, down coordinates (labeled x, y, z) to 
   % east, north, up (ENU) coordinates
   %ned = [x; y; z+1.169149329402717e+04];
@@ -84,3 +87,19 @@ function [lat,lon,alt] = ray_xyz2latlon(x,y,z,ref_lat,ref_lon,ref_alt)
   alt = U.*( 1 - b^2./(a*V));
   lat = atan( (Z + ep2*zo)./r )*180/pi;
   lon = atan2(Y,X)*180/pi;
+  
+elseif strcmp(projection,'flat')
+    R = 6367;
+    ned = [x; y; z];
+    rotation = [0 1 0; 1 0 0; 0 0 -1];
+  
+    enu = rotation*ned;
+  
+    x = enu(1);
+    y = enu(2);
+    z = enu(3);
+
+    lat = ref_lat + y*180/(pi*R);
+    lon = ref_lon + x*180/(pi*R*cos(lat*pi/180));
+    elev = z;
+end

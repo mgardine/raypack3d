@@ -11,9 +11,7 @@ function ray_invert_db(varargin)
 %
 % This function requires the presence of two other functions:
 %   ray_make_traveltime.m
-%   ray_latlon2xyz_flat.m (for flat-earth projection)
-%       OR
-%   ray_latlon2xyz.m (for spherical-earth projection)
+%   ray_latlon2xyz.m
 %
 % Usage:
 % ray_invert_db(database,model_file,model_pars_file,damping,[subset],[locations])
@@ -78,15 +76,9 @@ else
     disp(['projection = ' projection])
 end
 
-% Checks for the existence of ray_latlon2xyz or ray_latlon2xyz_flat
-if strcmp(projection,'flat')
-    if (exist('ray_latlon2xyz_flat') ~= 2)
-        error('Error: This function is dependent on ray_latlon2xyz_flat.  Please add this function into the path')
-    end
-elseif strcmp(projection,'spherical')
-    if (exist('ray_latlon2xyz') ~= 2)
-        error('Error: This function is dependent on ray_latlon2xyz.  Please add this function into the path')
-    end
+% Checks for the existence of ray_latlon2xyz
+if (exist('ray_latlon2xyz') ~= 2)
+    error('Error: This function is dependent on ray_latlon2xyz.  Please add this function into the path')
 end
 
 switch nargin

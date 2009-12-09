@@ -7,9 +7,7 @@ function lostray=ray_lostrays(varargin)
 % that are unable to be matched by the raytrace routine.
 %
 % This function requires the presence of one other function:
-%   ray_latlon2xyz_flat.m (for flat-earth projection)
-%       OR
-%   ray_latlon2xyz.m (for spherical-earth projection)
+%   ray_latlon2xyz.m
 %
 % Usage: lostray=ray_lostrays(r,database)
 %
@@ -57,15 +55,9 @@ else
     disp(['projection = ' projection])
 end
 
-% Checks for the existence of ray_latlon2xyz or ray_latlon2xyz_flat
-if strcmp(projection,'flat')
-    if (exist('ray_latlon2xyz_flat') ~= 2)
-        error('Error: This function is dependent on ray_latlon2xyz_flat.  Please add this function into the path')
-    end
-elseif strcmp(projection,'spherical')
-    if (exist('ray_latlon2xyz') ~= 2)
-        error('Error: This function is dependent on ray_latlon2xyz.  Please add this function into the path')
-    end
+% Checks for the existence of ray_latlon2xyz
+if (exist('ray_latlon2xyz') ~= 2)
+    error('Error: This function is dependent on ray_latlon2xyz.  Please add this function into the path')
 end
 
 switch nargin
@@ -101,25 +93,12 @@ db = dbsort(db,'orid');
 
 [orig_lat,orig_lon,depth,site_lat,site_lon,orig_time] = dbgetv(db,'origin.lat','origin.lon','depth','site.lat','site.lon','origin.time');
 dbclose(db);
-
-if strcmp(projection,'flat')
-    for i=1:length(orig_lat)
-        [orig_x,orig_y,junk]=ray_latlon2xyz_flat(orig_lat(i),orig_lon(i),depth(i),ref_lat,ref_lon);
-        [site_x,site_y,junk]=ray_latlon2xyz_flat(site_lat(i),site_lon(i),0,ref_lat,ref_lon);
-        dbase(i,:)=[orig_x orig_y depth site_x site_y orig_time(i)];
-    end
     
-elseif strcmp(projection,'spherical')
-    for i=1:length(orig_lat)
-        [orig_x,orig_y,junk]=ray_latlon2xyz(orig_lat(i),orig_lon(i),depth(i),ref_lat,ref_lon);
-        [site_x,site_y,junk]=ray_latlon2xyz(site_lat(i),site_lon(i),0,ref_lat,ref_lon);
-        dbase(i,:)=[orig_x orig_y depth site_x site_y orig_time(i)];
-    end
-    
-else
-    disp('Error: Invalid projection type');
-    return
-end
+ for i=1:length(orig_lat)
+    [orig_x,orig_y,junk]=ray_latlon2xyz(orig_lat(i),orig_lon(i),depth(i),ref_lat,ref_lon,projection);
+    [site_x,site_y,junk]=ray_latlon2xyz(site_lat(i),site_lon(i),0,ref_lat,ref_lon);
+    dbase(i,:)=[orig_x orig_y depth site_x site_y orig_time(i)];
+ end
 
 i=1;
 k=1;

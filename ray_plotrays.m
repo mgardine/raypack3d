@@ -6,6 +6,9 @@ function ray_plotrays(varargin)
 % This function plots the rays to an individual station given by lat, lon
 % coordinates, or plots all rays if no lat, lon given
 % 
+% This function requires the presence of one other function:
+%   ray_latlon2xyz.m
+%
 % Usage: ray_plotrays(r,lat,lon,[color])
 %
 % Inputs:
@@ -84,15 +87,7 @@ if plot_all
     rays = [r.rayid(:) r.raycoord(:,:)];
 
 else
-    if strcmp(projection,'flat')
-        [x,y,z]=ray_latlon2xyz_flat(lat,lon,0,ref_lat,ref_lon);
-        
-    elseif strcmp(projection,'spherical')
-        [x,y,z]=ray_latlon2xyz(lat,lon,0,ref_lat,ref_lon);
-        
-    else
-        disp('Error: Invalid projection type');
-    end
+    [x,y,z]=ray_latlon2xyz(lat,lon,0,ref_lat,ref_lon,projection);
 
     a = find(r.raycoord(:,1)>x-.005 & r.raycoord(:,1)<x+.005 & r.raycoord(:,2)>y-.005 & r.raycoord(:,2)<y+.005);
 
