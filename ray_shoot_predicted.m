@@ -51,18 +51,21 @@ end
 
 % Checks for the existence of the ray_defaults file
 if exist('ray_defaults','file')==2
-    [ref_lat,ref_lon,projection]=ray_defaults();
+    [ref_lat,ref_lon,ref_alt,projection]=ray_defaults();
     disp('ray_defaults file found.')
     disp(['ref_lat = ' num2str(ref_lat)])
     disp(['ref_lon = ' num2str(ref_lon)])
+    disp(['ref_alt = ' num2str(ref_alt)])
     disp(['projection = ' projection])
 else
     ref_lat=17.01;
     ref_lon=-105.99;
+    ref_alt=0;
     projection='flat';
     disp('ray_defaults file NOT found. Values used:')
     disp(['ref_lat = ' num2str(ref_lat)])
     disp(['ref_lon = ' num2str(ref_lon)])
+    disp(['ref_alt = ' num2str(ref_alt)])
     disp(['projection = ' projection])
 end
 
@@ -93,9 +96,9 @@ switch nargin
 
         for i=1:length(orids)
             disp(['orid is: ' num2str(orids(i))]);
-            ray_get_receivers(database,orids(i),'./receiver_file.rec',ref_lat,ref_lon,projection);
+            ray_get_receivers(database,orids(i),'./receiver_file.rec',ref_lat,ref_lon,ref_alt,projection);
                 
-            [x,y,z]=ray_latlon2xyz(lat(i),lon(i),-1*depth(i),ref_lat,ref_lon,projection);
+            [x,y,z]=ray_latlon2xyz(lat(i),lon(i),-1*depth(i),ref_lat,ref_lon,ref_alt,projection);
             
             runstring = ['raytrace3d shoot_star ' model_file ' ' num2str(x) ' '...
                 num2str(y) ' ' num2str(z) ' 0 180 100 0 360 181 0 > ./star_file.star'];
@@ -153,9 +156,9 @@ switch nargin
 
         for i=1:length(orids)
             disp(['orid is: ' num2str(orids(i))]);
-            ray_get_receivers(database,orids(i),'./receiver_file.rec',ref_lat,ref_lon,projection,subset);
+            ray_get_receivers(database,orids(i),'./receiver_file.rec',ref_lat,ref_lon,ref_alt,projection,subset);
 
-            [x,y,z]=ray_latlon2xyz(lat(i),lon(i),-1*depth(i),ref_lat,ref_lon,projection);
+            [x,y,z]=ray_latlon2xyz(lat(i),lon(i),-1*depth(i),ref_lat,ref_lon,ref_alt,projection);
             
             runstring = ['raytrace3d shoot_star ' model_file ' ' num2str(x) ' '...
                 num2str(y) ' ' num2str(z) ' 0 180 100 0 360 181 0 > ./star_file.star'];

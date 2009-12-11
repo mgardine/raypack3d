@@ -40,18 +40,21 @@ end
 
 % Checks for the existence of the ray_defaults file
 if exist('ray_defaults','file')==2
-    [ref_lat,ref_lon,projection]=ray_defaults();
+    [ref_lat,ref_lon,ref_alt,projection]=ray_defaults();
     disp('ray_defaults file found.')
     disp(['ref_lat = ' num2str(ref_lat)])
     disp(['ref_lon = ' num2str(ref_lon)])
+    disp(['ref_alt = ' num2str(ref_alt)])
     disp(['projection = ' projection])
 else
     ref_lat=17.01;
     ref_lon=-105.99;
+    ref_alt=0;
     projection='flat';
     disp('ray_defaults file NOT found. Values used:')
     disp(['ref_lat = ' num2str(ref_lat)])
     disp(['ref_lon = ' num2str(ref_lon)])
+    disp(['ref_alt = ' num2str(ref_alt)])
     disp(['projection = ' projection])
 end
 
@@ -95,8 +98,8 @@ db = dbsort(db,'orid');
 dbclose(db);
     
  for i=1:length(orig_lat)
-    [orig_x,orig_y,junk]=ray_latlon2xyz(orig_lat(i),orig_lon(i),depth(i),ref_lat,ref_lon,projection);
-    [site_x,site_y,junk]=ray_latlon2xyz(site_lat(i),site_lon(i),0,ref_lat,ref_lon);
+    [orig_x,orig_y,junk]=ray_latlon2xyz(orig_lat(i),orig_lon(i),depth(i),ref_lat,ref_lon,ref_alt,projection);
+    [site_x,site_y,junk]=ray_latlon2xyz(site_lat(i),site_lon(i),0,ref_lat,ref_lon,ref_alt,projection);
     dbase(i,:)=[orig_x orig_y depth site_x site_y orig_time(i)];
  end
 

@@ -15,22 +15,15 @@ function ray_get_receivers(varargin)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if exist('ray_defaults','file')==2
-    [ref_lat,ref_lon,projection]=ray_defaults();
-else
-    ref_lat=17.01;
-    ref_lon=-105.99;
-    projection='flat';
-end
-
 switch nargin
-    case 6
+    case 7
         database = varargin{1};
         orid = varargin{2};
         outfile = varargin{3};
         ref_lat = varargin{4};
         ref_lon = varargin{5};
-        projection = varargin{6};
+        ref_alt = varargin{6};
+        projection = varargin{7};
 
         db = dbopen(database,'r');
         
@@ -57,14 +50,15 @@ switch nargin
         [lat,lon,elev,orig_time,arr_time] = dbgetv(db,'site.lat','site.lon','site.elev','origin.time','arrival.time');
         dbclose(db);
         
-    case 7
+    case 8
         database = varargin{1};
         orid = varargin{2};
         outfile = varargin{3};
         ref_lat = varargin{4};
         ref_lon = varargin{5};
-        projection = varargin{6};
-        subset = varargin{7};
+        ref_alt = varargin{6};
+        projection = varargin{7};
+        subset = varargin{8};
 
         db = dbopen(database,'r');
         db_site = dblookup(db,'','site','','');
@@ -99,7 +93,7 @@ end
 fid = fopen(outfile,'wt');
 fprintf(fid,'%s\n','x     y     z     T0     T     ratio     order');
 for i=1:length(lat)
-    [x,y,z] = ray_latlon2xyz(lat(i),lon(i),elev(i),ref_lat,ref_lon,projection);
+    [x,y,z] = ray_latlon2xyz(lat(i),lon(i),elev(i),ref_lat,ref_lon,ref_alt,projection);
     fprintf(fid,'%f %f %f %f %f 1 0\n',x,y,z,orig_time(i),arr_time(i));
 end
 

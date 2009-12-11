@@ -61,18 +61,21 @@ end
 
 % Checks for the existence of the ray_defaults file
 if exist('ray_defaults','file')==2
-    [ref_lat,ref_lon,projection]=ray_defaults();
+    [ref_lat,ref_lon,ref_alt,projection]=ray_defaults();
     disp('ray_defaults file found.')
     disp(['ref_lat = ' num2str(ref_lat)])
     disp(['ref_lon = ' num2str(ref_lon)])
+    disp(['ref_alt = ' num2str(ref_alt)])
     disp(['projection = ' projection])
 else
     ref_lat=17.01;
     ref_lon=-105.99;
+    ref_alt=0;
     projection='flat';
     disp('ray_defaults file NOT found. Values used:')
     disp(['ref_lat = ' num2str(ref_lat)])
     disp(['ref_lon = ' num2str(ref_lon)])
+    disp(['ref_alt = ' num2str(ref_alt)])
     disp(['projection = ' projection])
 end
 
