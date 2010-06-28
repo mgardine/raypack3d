@@ -146,7 +146,7 @@ switch nargin
         [lat,lon,depth,orids] = dbgetv(db2,'lat','lon','depth','orid');
         dbclose(db);
         
-        orids=unique(orids);
+        [orids,m,n]=unique(orids);
         
         ttout = fopen('./pred_tt.tt','wt');
         rayout = fopen('./ray_file.rays','wt');
@@ -158,7 +158,7 @@ switch nargin
             disp(['orid is: ' num2str(orids(i))]);
             ray_get_receivers(database,orids(i),'./receiver_file.rec',ref_lat,ref_lon,ref_alt,projection,subset);
 
-            [x,y,z]=ray_latlon2xyz(lat(i),lon(i),-1*depth(i),ref_lat,ref_lon,ref_alt,projection);
+            [x,y,z]=ray_latlon2xyz(lat(m(i)),lon(m(i)),-1*depth(m(i)),ref_lat,ref_lon,ref_alt,projection);
             
             runstring = ['raytrace3d shoot_star ' model_file ' ' num2str(x) ' '...
                 num2str(y) ' ' num2str(z) ' 0 180 100 0 360 181 0 > ./star_file.star'];

@@ -3,15 +3,18 @@ function ray_make_traveltime(varargin)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Function ray_make_traveltime
 %
-% This function is internal to the ray_invert_db function.
-% It generates the traveltimes.tsv file required by raytrace3d invert.
+% This function is internal to the ray_invert_db and ray_invert_ps functions.
+% It generates the traveltimes.tsv file required by raytrace3d invert and 
+% raytrace3d PSinvert. For S-waves, the function assumes a constant P:S 
+% ratio of 1.73.
 %
 % This function requires the presence of one other function:
 %   ray_latlon2xyz.m
 %
-% Required Input:
+% Required Inputs:
 %   db:                 A database pointer containing, at a minimum, the 
 %                       site, arrival, assoc, and origin tables.
+%
 %
 % Optional Input:
 %   locations:          The path to the output file containing updated
@@ -45,8 +48,8 @@ switch nargin
         
         db = dbsort(db,'orid');
         
-        [orig_lat,orig_lon,orig_depth,sta_lat,sta_lon,sta_elev,orig_time,arr_time]=...
-            dbgetv(db,'origin.lat','origin.lon','origin.depth','site.lat','site.lon','site.elev','origin.time','arrival.time');
+        [orig_lat,orig_lon,orig_depth,sta_lat,sta_lon,sta_elev,orig_time,arr_time,phase]=...
+            dbgetv(db,'origin.lat','origin.lon','origin.depth','site.lat','site.lon','site.elev','origin.time','arrival.time','iphase');
 
         orig_x=zeros(length(orig_lat),1);
         orig_y=zeros(length(orig_lat),1);
@@ -61,7 +64,11 @@ switch nargin
                 [sta_x(i),sta_y(i),sta_z(i)]=ray_latlon2xyz(sta_lat(i),sta_lon(i),sta_elev(i),ref_lat,ref_lon,ref_alt,projection);
                 time(i)=arr_time(i)-orig_time(i);
                 if orig_z(i)>0
-                    fprintf(fid,'%f %f %f %f %f %f 0 0 %f 1 0\n',orig_x(i),orig_y(i),orig_z(i),sta_x(i),sta_y(i),sta_z(i),time(i));
+                    if strcmp(phase(i),'P')
+                        fprintf(fid,'%f %f %f %f %f %f 0 0 %f 1 0\n',orig_x(i),orig_y(i),orig_z(i),sta_x(i),sta_y(i),sta_z(i),time(i));
+                    elseif strcmp(phase(i),'S')
+                        fprintf(fid,'%f %f %f %f %f %f 0 0 %f 1.73 0\n',orig_x(i),orig_y(i),orig_z(i),sta_x(i),sta_y(i),sta_z(i),time(i));
+                    end
                 end
         end
     
@@ -78,11 +85,15 @@ switch nargin
         for i=1:length(orid)
             if zs(i)>0
                 db_temp=dbsubset(db,['orid=~/' num2str(orid(i)) '/']);
-                [sta_lat,sta_lon,sta_elev,arr_time]=dbgetv(db_temp,'site.lat','site.lon','site.elev','arrival.time');
+                [sta_lat,sta_lon,sta_elev,arr_time,phase]=dbgetv(db_temp,'site.lat','site.lon','site.elev','arrival.time','iphase');
                 for j=1:length(sta_lat)
                     [sta_x(j),sta_y(j),sta_z(j)]=ray_latlon2xyz(sta_lat(j),sta_lon(j),sta_elev(j),ref_lat,ref_lon,ref_alt,projection);
                     time(j)=arr_time(j)-t0(i);
-                    fprintf(fid,'%f %f %f %f %f %f 0 0 %f 1 0\n',xs(i),ys(i),zs(i),sta_x(j),sta_y(j),sta_z(j),time(j));
+                    if strcmp(phase(j),'P')
+                        fprintf(fid,'%f %f %f %f %f %f 0 0 %f 1 0\n',xs(i),ys(i),zs(i),sta_x(j),sta_y(j),sta_z(j),time(j));
+                    elseif strcmp(phase(j),'S')
+                        fprintf(fid,'%f %f %f %f %f %f 0 0 %f 1.73 0\n',xs(i),ys(i),zs(i),sta_x(j),sta_y(j),sta_z(j),time(j));
+                    end
                 end
             else
                 disp(['Orid ' num2str(orid(i)) ' has negative depth and will be skipped']) 

@@ -62,6 +62,11 @@ if isstruct(varargin{1})
             color = 'b';
             plot_all=1;
             
+        case 2
+            r = varargin{1};
+            color = varargin{2};
+            plot_all=1;
+            
         case 3
             r = varargin{1};
             lat = varargin{2};
@@ -120,9 +125,9 @@ for i=2:length(rays)
     if rays(i,1)==rayid && rays(i,4)+10>rays(i-1,4)
         temprays=[temprays; rays(i,:)];
     else
-        plot3(temprays(end,2),temprays(end,3),temprays(end,4),'ko','MarkerFaceColor','k','MarkerSize',6)
+        plot3(temprays(end,2),temprays(end,3),temprays(end,4),'kv','MarkerFaceColor','w','MarkerSize',6)
         plot3(temprays(2:end,2),temprays(2:end,3),temprays(2:end,4),[color '-'],'LineWidth',1)
-        plot3(temprays(1,2),temprays(1,3),temprays(1,4),'kv','MarkerFaceColor','k','MarkerSize',8)
+        plot3(temprays(1,2),temprays(1,3),temprays(1,4),'ko','MarkerFaceColor','w','MarkerSize',8)
         temprays=rays(i,:);
         rayid=rays(i,1);
         count = count+1;
