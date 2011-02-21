@@ -41,8 +41,8 @@ function r = ray_loaddata(varargin)
 %                   raycoord: [X, Y, Z] coordinates of the ray
 %                   tetra: Tetrahedron number that ray travels through
 %                   modeldims: [Num_X Num_Y Num_Z] number of nodes in model
-%                   modelijk: [node i, node j, node k, velocity, interface, hits, q]
-%                   modelxyz: [node x, node y, node z, veloctiy, interface, hits, q]
+%                   modelijk: [node i, node j, node k, velocity, interface, hits, (q or P/S ratio)]
+%                   modelxyz: [node x, node y, node z, veloctiy, interface, hits, (q or P/S ratio)]
 %
 % Author:
 % Matt Gardine
